@@ -9,6 +9,7 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Integer id) {
+        System.out.println("客户端查询了 id = " + id + " 的用户信息");
         return User.builder()
                 .id(id)
                 .usrName(String.valueOf(UUID.randomUUID()))
