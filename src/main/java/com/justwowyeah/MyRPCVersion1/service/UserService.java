@@ -4,4 +4,5 @@ import com.justwowyeah.MyRPCVersion1.common.User;
 
 public interface UserService {
     User getUserById(Integer id);
+    Integer insertUser(User user);
 }
