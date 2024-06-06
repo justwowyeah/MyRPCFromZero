@@ -10,7 +10,8 @@ import java.io.IOException;
 
 public class IOClient {
     public static RPCResponse sendRequest(String host, int port, RPCRequest request) {
-        // 建立Socket连接，创建流
+        // 建立 Socket 连接，创建流
+        // ObjectOutputStream 必须在 ObjectInputStream 前定义，因为后者需要使用前者附带的的元数据（头信息）
         try (Socket socket = new Socket(host, port);
              ObjectOutputStream objectoutputstream = new ObjectOutputStream(socket.getOutputStream());
              ObjectInputStream objectinputstream = new ObjectInputStream(socket.getInputStream())) {

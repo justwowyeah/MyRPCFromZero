@@ -32,8 +32,8 @@ public class ClientProxy implements InvocationHandler {
     // 建立参数对象的 proxy ，由于参数对象类型未知，使用泛型方法/根据实参/缺省匹配/类型
     <T>T getProxy(Class<T> clazz) {
         // 通过类加载器 ClassLoader 、未知类型接口数组、InvocationHandler实例，建立 proxy
-        // 此处，接口只有 clazz ，类加载器可以顺利加载类，invoke() 与 newProxyInstance() 位于同一类下
-        // proxy 建立后，每次 proxy 运行代理对象的方法都会进入 invoke()
+        // 此处: 1.接口只有 clazz ，类加载器可以顺利加载类 2. invoke() 与 newProxyInstance() 位于同一类下
+        // proxy 建立后，每次 proxy 运行代理对象的方法时都会进入 invoke()
         Object o = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, this);
         return (T)o;
     }
