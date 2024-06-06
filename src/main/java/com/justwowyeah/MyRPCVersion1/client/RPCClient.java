@@ -3,12 +3,6 @@ package com.justwowyeah.MyRPCVersion1.client;
 import com.justwowyeah.MyRPCVersion1.common.User;
 import com.justwowyeah.MyRPCVersion1.service.UserService;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.util.Random;
-
 public class RPCClient {
     public static void main(String[] args) {
         // 建立接口对象的代理
