@@ -1,17 +1,20 @@
 package com.justwowyeah.MyRPCVersion1.server;
 
-import com.justwowyeah.MyRPCVersion1.common.User;
+import com.justwowyeah.MyRPCVersion1.common.RPCRequest;
+import com.justwowyeah.MyRPCVersion1.common.RPCResponse;
 import com.justwowyeah.MyRPCVersion1.service.UserService;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class RPCServer {
     public static void main(String[] args) {
-        UserService userservice = new UserServiceImpl();
+        UserService userService = new UserServiceImpl();
         // 使用 try-with-resources 建立 ServerSocket 连接
         try (ServerSocket serverSocket = new ServerSocket(8899)) {
             System.out.println("服务端已启动");
@@ -23,15 +26,19 @@ public class RPCServer {
                     // 创建流
                     try (ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
                          ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
-                        // 从流中读取 int 数据，转换为 Integer 对象
-                        // 如果不转换，JVM 也会在 (userservice 为 id 赋值时) 隐式转换
-                        Integer id = ois.readInt();
-                        User user = userservice.getUserById(id);
-                        oos.writeObject(user);
+                        // 读取字节流数据，转换为 RPCRequest 对象处理
+                        RPCRequest request = (RPCRequest)ois.readObject();
+                        // 根据请求获取被调用的方法
+                        Method method = userService.getClass().getMethod(request.getMethodName(), request.getParamsType());
+                        // 调用对象/触发方法，保存返回对象
+                        Object invoke = method.invoke(userService, request.getParams());
+                        // 封装数据，以字节流写入缓冲区
+                        oos.writeObject(RPCResponse.success(invoke));
                         // 不等缓冲区满，手动清空以发送数据
                         oos.flush();
-                    } catch (IOException e) {
-                        // 如果有 IO 异常，则打印 run() 堆栈追踪信息
+                    } catch (IOException | ClassNotFoundException | NoSuchMethodException | IllegalAccessException |
+                             InvocationTargetException e) {
+                        // 如果有异常，则打印 run() 堆栈追踪信息
                         e.printStackTrace();
                         System.out.println("IO错误");
                     }

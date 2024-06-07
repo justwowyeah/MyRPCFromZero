@@ -9,7 +9,9 @@ public class RPCClient {
         ClientProxy clientProxy = new ClientProxy("127.0.0.1", 8899);
         UserService proxy = clientProxy.getProxy(UserService.class);
         // 反射调用方法，将 Object 类型转换为 User 类型
-        User o = proxy.getUserById(10);
+        User userById = proxy.getUserById(10);
+        System.out.println("查询 id = 10 的用户信息");
+        System.out.println("服务端返回的 User 数据：" + userById);
         // 反射调用方法，构建 User 类型数据
         User user = User.builder().id(100).usrName("张三").sex(true).build();
         Integer id = proxy.insertUser(user);

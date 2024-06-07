@@ -16,10 +16,10 @@ public class RPCResponse implements Serializable {
     // 定义消息
     private String message;
 
-    public RPCResponse success(Object data) {
+    public static RPCResponse success(Object data) {
         return RPCResponse.builder().code(200).data(data).build();
     }
-    public RPCResponse fail() {
+    public static RPCResponse fail() {
         return RPCResponse.builder().code(500).message("服务端发生错误").build();
     }
 }
